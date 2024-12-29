@@ -2,6 +2,9 @@
 # into the current file
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
@@ -14,11 +17,15 @@ def main():
     dt=0
     clock =pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
-    updatable.add(player)
-    drawable.add(player)
+    Player.containers = (updatable, drawable)
+    player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+
+    asteroids = pygame.sprite.Group()
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers=(updatable)
+    asteroidField=AsteroidField()
     
     while(True):
         for event in pygame.event.get():
