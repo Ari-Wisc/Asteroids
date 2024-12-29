@@ -1,9 +1,12 @@
 # import everything from a module
 # into the current file
+import sys
 from constants import *
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
+
 
 # this allows us to use code from
 # the open-source pygame library
@@ -21,19 +24,29 @@ def main():
     drawable = pygame.sprite.Group()
     Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+    Shot.containers = (shots, updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers=(updatable)
     asteroidField=AsteroidField()
     
-    while(True):
+    while(True): 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
             
         for thing in updatable:
             thing.update(dt)
+        for asteroid in asteroids:
+            if(player.colision(asteroid)):             
+                print("Game over!")
+                return
+            for shot in shots:
+                if(shot.colision(asteroid)):
+                    shot.kill()
+                    asteroid.split()
+
         screen.fill((0, 0, 0))
 
         for thing in drawable:
